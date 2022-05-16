@@ -33,8 +33,7 @@ public class CoreUser implements Serializable {
     @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID uuid = UUID.randomUUID();
 
-    private String firstname;
-    private String lastname;
+    private String nickname;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "userAuthentication_id")
@@ -61,16 +60,6 @@ public class CoreUser implements Serializable {
         this.userAuthentication = userAuthentication;
     }
 
-
-    public String getFirstname() {
-        return this.firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-
     public String getEmail() {
         return this.email;
     }
@@ -79,12 +68,12 @@ public class CoreUser implements Serializable {
         this.email = email;
     }
 
-    public String getLastname() {
-        return this.lastname;
+    public String getNickname() {
+        return this.nickname;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
     
     public UUID getUuid() {

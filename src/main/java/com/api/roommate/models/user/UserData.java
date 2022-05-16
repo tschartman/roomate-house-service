@@ -10,11 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class UserData implements Serializable {
 
-    @NotEmpty(message = "First name can not be empty")
-    private String firstname;
-
-    @NotEmpty(message = "Last name can not be empty")
-    private String lastname;
+    @NotEmpty(message = "Nick name can not be empty")
+    private String nickname;
 
     @NotEmpty(message = "Email can not be empty")
     @Email(message = "Please provide a valid email")
@@ -24,22 +21,13 @@ public class UserData implements Serializable {
     @NotEmpty(message = "Password can not be empty")
     private String password;
 
-    public String getFirstname() {
-        return this.firstname;
+    public String getNickname() {
+        return this.nickname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
-
-    public String getLastname() {
-        return this.lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
 
     public String getEmail() {
         return this.email;

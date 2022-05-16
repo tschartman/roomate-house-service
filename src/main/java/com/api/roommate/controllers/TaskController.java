@@ -54,11 +54,12 @@ public class TaskController {
         House taskHouse = owner.getHouse();
 
         if (owner == null || !owner.getStatus().equals("owner")) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         HouseTask newHouseTask = new HouseTask();
         newHouseTask.setName(housetaskData.getName());
+        newHouseTask.setColor(housetaskData.getColor());
         newHouseTask.setHouseUser(owner);
         taskHouse.addHouseTask(newHouseTask);
         taskRepository.save(newHouseTask);
@@ -71,10 +72,18 @@ public class TaskController {
         String currentUserName = authentication.getName();
         CoreUser user = userRepository.findByEmail(currentUserName);
         HouseUser houseUser = houseUserRepository.findByUserUuid(user.getUuid());
+
+        if (houseUser == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         House taskHouse = houseUser.getHouse();
         
         if (user != null && houseUser != null && taskHouse != null) {
-            return ResponseEntity.ok(taskRepository.findByHouseId(taskHouse.getId()));
+            if (houseUser.getStatus().equals("accepted")) {
+                return ResponseEntity.ok(taskRepository.findByHouseId(taskHouse.getId()));
+            }
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -93,7 +102,7 @@ public class TaskController {
         }
 
         if (!task.getHouse().getId().equals(taskHouse.getId())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } 
 
         return ResponseEntity.ok(task.getHouseUser());

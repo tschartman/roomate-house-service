@@ -120,6 +120,20 @@ public class HouseController {
     public @ResponseBody Iterable<House> getAllHouses() {
         return houseRepository.findAll();
     }
+
+    @GetMapping(path="/house")
+    public ResponseEntity<?> getHouse(final @Valid @RequestBody HouseUserData houseUserData) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        House house = houseRepository.findByUuid(houseUserData.getHouseUUID());
+        if (house == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(house);
+    }
     
     @GetMapping(path="/me")
     public ResponseEntity<?> getMyHouse() {

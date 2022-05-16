@@ -42,6 +42,8 @@ public class HouseTask implements Serializable {
 
     private String name;
 
+    private String color;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     @JoinColumn(name="houseUser_id")
     @JsonManagedReference
@@ -82,6 +84,15 @@ public class HouseTask implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public String getColor() {
+        return this.color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public HouseUser getHouseUser() {
