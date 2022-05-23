@@ -61,7 +61,7 @@ public class HouseController {
         newHouse.setName(houseData.getName());
         newHouse.setOwner(houseUser);
         houseUser.setStatus("owner");
-        newHouse.addRoomate(houseUser);
+        newHouse.addRoommate(houseUser);
         houseRepository.save(newHouse);
         houseUserRepository.save(houseUser);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -90,7 +90,7 @@ public class HouseController {
         }
 
         houseUser.setStatus("requested");
-        house.addRoomate(houseUser);
+        house.addRoommate(houseUser);
         houseRepository.save(house);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -104,7 +104,7 @@ public class HouseController {
         HouseUser statusUser = houseUserRepository.findByUserUuid(houseStatusData.getUserUUID());
 
         if (!owner.getStatus().equals("owner")) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         if (owner.getHouse().getUuid() != statusUser.getHouse().getUuid()) {
@@ -132,6 +132,7 @@ public class HouseController {
         if (house == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return ResponseEntity.ok(house);
     }
     
@@ -141,8 +142,25 @@ public class HouseController {
         String currentUserName = authentication.getName();
         CoreUser user = userRepository.findByEmail(currentUserName);
         HouseUser houseUser = houseUserRepository.findByUserUuid(user.getUuid());
+
         if (user != null && houseUser != null && houseUser.getHouse() != null) {
-            return ResponseEntity.ok(houseUser.getHouse());
+            if (houseUser.getStatus().equals("accepted") || houseUser.getStatus().equals("owner"))  {
+                return ResponseEntity.ok(houseUser.getHouse());
+            }
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(path="/user")
+    public ResponseEntity<?> getHouseUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        CoreUser user = userRepository.findByEmail(currentUserName);
+        HouseUser houseUser = houseUserRepository.findByUserUuid(user.getUuid());
+        if (user != null && houseUser != null && houseUser.getHouse() != null) {
+            return ResponseEntity.ok(houseUser);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

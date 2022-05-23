@@ -48,6 +48,9 @@ public class HouseTaskRecord implements Serializable {
   @Column(name = "timestamp")
   private Date timestamp;
 
+  public HouseTaskRecord() {
+    super();
+  }
 
   public Long getId() {
     return this.id;

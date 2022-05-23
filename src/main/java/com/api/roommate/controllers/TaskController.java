@@ -78,10 +78,10 @@ public class TaskController {
         }
 
         House taskHouse = houseUser.getHouse();
-        
+        List<HouseTask> houseTasks = taskRepository.findByHouseId(taskHouse.getId());
         if (user != null && houseUser != null && taskHouse != null) {
-            if (houseUser.getStatus().equals("accepted")) {
-                return ResponseEntity.ok(taskRepository.findByHouseId(taskHouse.getId()));
+            if (houseUser.getStatus().equals("accepted") || houseUser.getStatus().equals("owner")) {
+                return ResponseEntity.ok(houseTasks);
             }
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -149,15 +149,16 @@ public class TaskController {
         CoreUser user = userRepository.findByEmail(currentUserName);
         HouseUser houseUser = houseUserRepository.findByUserUuid(user.getUuid());
         HouseTask task = taskRepository.findByUuid(taskRequest.getTaskUUID());
-        List<HouseTask> activeTasks = houseUser.getActiveTasks();
         House house = houseUser.getHouse();
-        List<HouseUser> houseUsers = house.getRoomates();
+        List<HouseUser> houseUsers = house.getRoommates();
 
         if (user == null || houseUser == null || task == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (activeTasks.contains(task)) {
+        HouseUser activeUser = task.getHouseUser();
+
+        if (activeUser.getId() == houseUser.getId()) {
             HouseTaskRecord newHouseTaskRecord = new HouseTaskRecord();
             newHouseTaskRecord.setHouseTask(task);
             newHouseTaskRecord.setHouseUser(houseUser);
@@ -166,14 +167,15 @@ public class TaskController {
                 int next = (current + 1) % houseUsers.size();
                 task.setHouseUser(houseUsers.get(next));
             }
-            houseTaskRecordRepository.save(newHouseTaskRecord);
+
             task.addHouseTaskRecord(newHouseTaskRecord);
+            houseTaskRecordRepository.save(newHouseTaskRecord);
             taskRepository.save(task);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 }

@@ -46,7 +46,6 @@ public class HouseTask implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     @JoinColumn(name="houseUser_id")
-    @JsonManagedReference
     private HouseUser houseUser;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -54,6 +53,10 @@ public class HouseTask implements Serializable {
     @JsonManagedReference
     private List<HouseTaskRecord> houseTaskRecords = new ArrayList<HouseTaskRecord>();
     
+    public HouseTask() {
+        super();
+    }
+
     public Long getId() {
         return this.id;
     }

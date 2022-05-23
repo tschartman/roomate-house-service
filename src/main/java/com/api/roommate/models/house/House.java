@@ -37,7 +37,7 @@ public class House implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "house", cascade = CascadeType.ALL)
     @Column(nullable = true)
     @JsonManagedReference
-    private List<HouseUser> roomates = new ArrayList<HouseUser>();
+    private List<HouseUser> roommates = new ArrayList<HouseUser>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "house", cascade = CascadeType.ALL)
     @Column(nullable = true)
@@ -58,12 +58,12 @@ public class House implements Serializable {
         this.uuid = uuid;
     }
 
-    public List<HouseUser> getRoomates() {
-        return this.roomates;
+    public List<HouseUser> getRoommates() {
+        return this.roommates;
     }
 
-    public void setRoomates(List<HouseUser> roomates) {
-        this.roomates = roomates;
+    public void setRoomates(List<HouseUser> roommates) {
+        this.roommates = roommates;
     }
 
     public String getName() {
@@ -82,13 +82,13 @@ public class House implements Serializable {
         this.id = id;
     }
 
-    public void addRoomate(HouseUser houseUser) {
-        roomates.add(houseUser);
+    public void addRoommate(HouseUser houseUser) {
+        roommates.add(houseUser);
         houseUser.setHouse(this);
     }
 
-    public void removeRoomate(HouseUser houseUser) {
-        roomates.remove(houseUser);
+    public void removeRoommate(HouseUser houseUser) {
+        roommates.remove(houseUser);
         houseUser.setHouse(null);
     }
 
